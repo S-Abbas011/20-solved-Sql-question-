@@ -48,7 +48,7 @@ where total_profit > 50000
 ```
 
 ## 5.Find top 3 customers based on total purchase amount.
-```
+```SQL
 select c.customer_name, sum(s.sales) as total_sales
 from customer as c 
 join sales as s 

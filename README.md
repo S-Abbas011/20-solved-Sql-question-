@@ -3,23 +3,27 @@ This repository contains 20 SQL practice questions solved using the SuperMart Da
 
 ## *SELECT * FROM CUSTOMER* ##
 
---Display customer name, product name, and quantity for all sales orders
+## 1Display customer name, product name, and quantity for all sales orders
 
+```SQL
 Select c.customer_name, p.product_name, s.quantity 
 from customer as c 
 join sales as s 
 on c.customer_id = s.customer_id 
 join product as p
 on s.product_id = p.product_id 
+```
 
---2.Find total sales amount per product category.
-
+## 2.Find total sales amount per product category.
+```SQL
 select p.category, sum(s.sales) from product as p 
 join sales as s 
 on p.product_id= s.product_id 
 group by p.category 
+```
 
---3List customers who have spent more than the average spending of all customers.
+## 3List customers who have spent more than the average spending of all customers.
+```SQL
 select c.customer_name , 
 sum(s.sales) as total_sales from 
 customer as c 
@@ -28,9 +32,10 @@ on c.customer_id = s.customer_id
 group by c.customer_name 
 having sum(s.sales) > (select avg(sales) from sales )
 order by total_sales desc
+```
 
-
---4 Using a CTE, calculate total profit per region and show only regions with profit above 50,000.
+## 4 Using a CTE, calculate total profit per region and show only regions with profit above 50,000.
+```SQL
 with total_profit_per_region as(
 Select c.region, sum(s.profit) total_profit
 from customer as c 
@@ -41,10 +46,10 @@ group by c.region
 select region, total_profit 
 from total_profit_per_region 
 where total_profit > 50000
+```
 
-
---5.Find top 3 customers based on total purchase amount.
-
+## 5.Find top 3 customers based on total purchase amount.
+```
 select c.customer_name, sum(s.sales) as total_sales
 from customer as c 
 join sales as s 
@@ -52,15 +57,17 @@ on c.customer_id = s.customer_id
 group by c.customer_name
 order by total_Sales desc 
 limit 3 
+```
 
---6	List each region and the number of unique customers in it.
-
+## 6.List each region and the number of unique customers in it.
+```SQL
 select region , count(distinct customer_name) as unqiue_cust
 from customer
 group by region 
+```
 
---7.Rank products by total sales within each category using a window function.
-
+## 7.Rank products by total sales within each category using a window function.
+```SQL
 with rank_product as (
 select p.product_name,c.region, sum(s.sales) as total_sales
 from product as p 
@@ -74,24 +81,26 @@ select product_name ,total_Sales,
 rank() over(partition by region order by total_sales desc) as rank_cust_by_total_sales
 from rank_product
 order by total_Sales asc
+```
+## 8.Show all products that have never been sold.
 
--- 8.Show all products that have never been sold.
-
+```
 select p.product_id , p.product_name , s.order_id 
 from product as p 
 left join sales as s
 on p.product_id = s.product_id 
 where s.order_id is NULL
+```
 
-
---9. Find monthly sales trends for the last 6 months.
-
+## 9. Find monthly sales trends for the last 6 months.
+```
 select extract(month from order_date) months, sales
 from sales
 where order_date >= CURRENT_DATE - INTERVAl '6 months'
+```
 
-
---10.Find the most profitable product in each region.
+## 10.Find the most profitable product in each region.
+```SQL
 with most_profitable_product AS (
 Select c.region ,p.product_name, sum(s.profit) Total_profit
 from customer as c 
@@ -105,9 +114,10 @@ order by total_profit desc
 SELECT region, product_name,Total_profit 
 from most_profitable_product
 
+```
+## 11.Display total quantity sold per customer per category.
 
---11.Display total quantity sold per customer per category.
-
+```SQL
 select c.customer_name, p.category, sum(s.quantity) as Total_quantity
 from customer as c 
 join sales as s
@@ -116,13 +126,15 @@ join product as p
 on s.product_id = p.product_id 
 group by c.customer_name, p.category
 order by c.customer_name 
-
---12.Find the category contributing the highest revenue overall
+```
+## 12.Find the category contributing the highest revenue overall
+```SQL
 Select p.category , sum(s.sales * s.quantity) as total_Revenue
 from product as p 
 join sales as s 
 on p.product_id = s.product_id 
 group by p.category 
+```
 
 --13.List products sold in more than 3 different regions.
 Select p.product_name , c. region, count(distinct s.order_id)

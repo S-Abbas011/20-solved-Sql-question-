@@ -83,7 +83,7 @@ order by total_Sales asc
 ```
 ## 8.Show all products that have never been sold.
 
-```
+```SQL
 select p.product_id , p.product_name , s.order_id 
 from product as p 
 left join sales as s
@@ -92,7 +92,7 @@ where s.order_id is NULL
 ```
 
 ## 9.Find monthly sales trends for the last 6 months.
-```
+```SQL
 select extract(month from order_date) months, sales
 from sales
 where order_date >= CURRENT_DATE - INTERVAl '6 months'

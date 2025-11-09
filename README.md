@@ -67,19 +67,22 @@ group by region
 
 ## 7.Rank products by total sales within each category using a window function.
 ```SQL
-with rank_product as (
-select p.product_name,c.region, sum(s.sales) as total_sales
+with rank_products as (
+Select 
+	p.product_id,
+	p.product_name,
+	p.category,
+	sum(s.sales) as Total_sales,
+	rank() over(partition by p.category order by sum(s.sales) )as Rank_Sales 
 from product as p 
-join sales as s 
+join sales as s
 on p.product_id = s.product_id 
-join customer as c 
-on c.customer_id = s.customer_id 
-group by p.product_name, c.region 
+group by p.product_id , p.product_name, p.category
+order by total_sales desc 
 )
-select product_name ,total_Sales,
-rank() over(partition by region order by total_sales desc) as rank_cust_by_total_sales
-from rank_product
-order by total_Sales asc
+select product_name , category, Rank_sales
+from rank_products
+order by Rank_Sales desc
 ```
 ## 8.Show all products that have never been sold.
 
